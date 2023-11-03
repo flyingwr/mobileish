@@ -89,8 +89,7 @@ def main():
                 print(f"[+] Dart SDK version: {dart_version}; snapshot hash: {snapshot_hash}")
         else:
             print(f"[+] libflutter found in APK {apk_name} but libapp is missing. "
-                  "This means the app might not use Flutter although "
-                  "it has libflutter included")
+                  "This means the app might not use Flutter although it has libflutter included")
             
         try:
             # verify Flutter engine
