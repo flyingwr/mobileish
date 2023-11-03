@@ -61,7 +61,7 @@ def main():
             
         try:
             # verify Flutter engine
-            if sys.argv[1] in VERIFY_ENGINE_ARGS:
+            if len(sys.argv) > 0 and sys.argv[1] in VERIFY_ENGINE_ARGS:
                 print("[ ] Verifying Flutter engine...")
 
                 subprocess.call(f"{dex2smali_path} -o {smali_path} {apk_path}", shell=True,
