@@ -61,6 +61,8 @@ def main():
         continue
     apk_name = os.path.basename(apk_path)
 
+    dart_version, snapshot_hash = None, None
+
     with zipfile.ZipFile(apk_path) as zip_file:
         flutter_libs_found = set()
 
