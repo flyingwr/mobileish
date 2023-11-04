@@ -7,7 +7,7 @@
 
     If argument --verify-engine/-ve is passed, the script will also check if
     Flutter engine is embedded in the app. This will avoid false positives
-    like when the app has Flutter libraries but load none of them
+    like when the app has Flutter libraries but loads none of them
 
     Java is required to run dex2smali (will happen if the mentioned argument is passed)
 """
@@ -42,7 +42,7 @@ def find_flutter_embedding(smali_path: str) -> (Tuple[str, str] | None):
         for line in f:
             for entry in FLUTTER_ENGINE_ENTRIES:
                 if entry in line:
-                    return (entry, f.filename())
+                    return (entry, f.filename(), f.filelineno())
     return None
                 
 def get_snapshot_hash(libapp_content: bytes) -> (str | None):
@@ -98,10 +98,13 @@ def main():
 
                 subprocess.call(f"{dex2smali_path} -o {smali_path} {apk_path}", shell=True,
                                 stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-                if (result := find_flutter_embedding(smali_path)) is not None:
-                    entry, smali_file = result
+                if (result := find_flutter_embedding(smali_path)) is None:
+                    print(f"[+] APK {apk_name} does not have Flutter engine embedded. "
+                          "That means the app is most likely not to be using Flutter despite having its libraries")
+                else:
+                    entry, smali_file, line = result
                     print(f"[+] APK {apk_name} has Flutter engine embedded. "
-                          f"Occurrence in Smali code: [{smali_file}] {entry}")
+                          f"Occurrence in Smali code: [{smali_file}:{line}] {entry}")
         finally:
             shutil.rmtree(smali_path, ignore_errors=True)
 
